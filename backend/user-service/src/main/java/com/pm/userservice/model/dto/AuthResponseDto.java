@@ -16,4 +16,5 @@ public class AuthResponseDto {
     private String token;
     private int duration;
     private UUID userId;
+    private String username;
 }

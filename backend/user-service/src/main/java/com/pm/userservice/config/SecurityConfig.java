@@ -5,7 +5,6 @@ import com.pm.userservice.repository.UserRepository;
 import com.pm.userservice.security.AuthUserDetailsService;
 import com.pm.userservice.security.JwtFilterChain;
 import com.pm.userservice.service.AuthService;
-import jakarta.servlet.ServletContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

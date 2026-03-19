@@ -1,0 +1,74 @@
+services:
+
+  user-service:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userDB:5432/${POSTGRES_DB}?sslmode=disable
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+#      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.springframework.kafka.support.serializer.JsonSerializer
+#      ACCESS_TOKEN: 5367BCBABCD98FQ98PVN0@$&*@&70639792F423F8284D
+      SERVER_PORT: 4001
+    ports:
+      - "4001:4001"
+    networks:
+      - education-service
+    depends_on:
+      - userDB
+
+
+  userDB:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - student-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - education-service
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8888:8080"
+    networks:
+      - education-service
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+#    command:
+#      - start-dev
+#      - --db=postgres
+#      - --db-url-host=userDB
+#      - --db-username=${DB_USERNAME}
+#      - --db-password=${DB_PASSWORD}
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - "9090:8080"
+    depends_on:
+      - userDB
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    networks:
+      - education-service
+
+volumes:
+  student-data:
+
+  keycloak-data:
+    driver: local
+
+networks:
+  education-service:

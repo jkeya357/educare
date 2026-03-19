@@ -1,10 +1,10 @@
 package com.pm.userservice.service.impl;
 
-import com.pm.userservice.exceptions.EmailOrUsernameExistsException;
 import com.pm.userservice.exceptions.UserExistsException;
-import com.pm.userservice.exceptions.UserNotFoundException;
+import com.pm.userservice.mapper.UserMapper;
 import com.pm.userservice.model.dto.CreateUserRequestDto;
 import com.pm.userservice.model.entity.User;
+import com.pm.userservice.model.dto.UserResponseDto;
 import com.pm.userservice.model.utils.Role;
 import com.pm.userservice.repository.UserRepository;
 import com.pm.userservice.service.UserService;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
+
+    @Override
+    public UserResponseDto findUserById(UUID id) {
+        User foundUser = userRepository.findByUserId(id);
+        return userMapper.toDto(foundUser);
+    }
 
     @Override
     public User createUser(CreateUserRequestDto request) {

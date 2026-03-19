@@ -1,0 +1,38 @@
+services:
+  payment-service:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://paymentDB:5432/${POSTGRES_DB}?sslmode=disable
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: 4004
+    networks:
+      - education-service
+    ports:
+      - "4004:4004"
+    depends_on:
+      - paymentDB
+
+  paymentDB:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5435:5432"
+    networks:
+      - education-service
+    volumes:
+      - payment-db:/var/lib/postgresql/data
+
+volumes:
+  payment-db:
+
+networks:
+  education-service:

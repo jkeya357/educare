@@ -21,15 +21,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final UserDetailsService userDetailsService;
 
-//    @Value("${jwt.secret}")
-    private  String secretKey = "5367BCBABCD98FQ98PVN0@$&*@&70639792F423F8284D";
+    private final  String secretKey = "5367BCBABCD98FQ98PVN0@$&*@&70639792F423F8284D";
+
+    public AuthServiceImpl(
+            AuthenticationManager authenticationManager,
+            UserDetailsService userDetailsService,
+            UserService userService
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.userService = userService;
+    }
     private final Long jwtExpiration = 86400000L;
 
     @Override

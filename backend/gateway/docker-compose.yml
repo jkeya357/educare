@@ -1,0 +1,46 @@
+services:
+  gateway-service:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "4000:4000"
+    networks:
+      - education-service
+    depends_on:
+      - user-service
+      - course-service
+      - enrollment-service
+      - payment-service
+
+  user-service:
+    build: ../user-service
+    ports:
+      - "4001:4001"
+    networks:
+      - education-service
+
+  course-service:
+    build: ../course-service
+    ports:
+      - "4002:4002"
+    networks:
+      - education-service
+
+  enrollment-service:
+    build: ../enrollment-service
+    ports:
+      - "4003:4003"
+    networks:
+      - education-service
+
+  payment-service:
+    build: ../payment-service
+    ports:
+      - "4004:4004"
+    networks:
+      - education-service
+
+networks:
+  education-service:

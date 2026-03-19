@@ -29,6 +29,7 @@ public class AuthController {
         AuthResponseDto dto =  AuthResponseDto.builder()
                 .userId(user.getUserId())
                 .token(token)
+                .username(user.getUsername())
                 .duration(86400)
                 .build();
         return ResponseEntity.ok(dto);
@@ -44,6 +45,7 @@ public class AuthController {
         AuthResponseDto dto = AuthResponseDto.builder()
                 .userId(createUser.getUserId())
                 .token(token)
+                .username(createUser.getUsername())
                 .duration(86400)
                 .build();
         return ResponseEntity.ok(dto);

@@ -1,0 +1,38 @@
+services:
+  course-service:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://courseDB:5432/${POSTGRES_DB}?sslmode=disable
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: 4002
+    networks:
+      - education-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - courseDB
+
+  courseDB:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - education-service
+    ports:
+      - "5433:5432"
+    volumes:
+      - course-db:/var/lib/postgresql/data
+
+volumes:
+  course-db:
+
+networks:
+  education-service:
