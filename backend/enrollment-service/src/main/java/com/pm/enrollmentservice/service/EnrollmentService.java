@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface EnrollmentService {
 
+    List<EnrollmentResponseDto> getEnrollments();
     List<EnrollmentResponseDto> getEnrollmentsById(UUID studentId);
     EnrollmentResponseDto createEnrollment(EnrollmentRequestDto enrollmentRequestDto);
 }

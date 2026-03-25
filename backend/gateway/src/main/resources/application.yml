@@ -18,14 +18,14 @@ spring:
             - id: course-service
               uri: http://course-service:4002
               predicates:
-                - Path=/api/v1/course**
+                - Path=/api/v1/course/**
               filters:
                 - JwtValidation
 
             - id: enrollment-service
               uri: http://enrollment-service:4003
               predicates:
-                - Path=/api/v1/enroll/**
+                - Path=/api/v1/enrollment/**
               filters:
                 - JwtValidation
 

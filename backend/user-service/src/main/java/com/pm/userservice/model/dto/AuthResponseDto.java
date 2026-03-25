@@ -1,5 +1,6 @@
 package com.pm.userservice.model.dto;
 
+import com.pm.userservice.model.utils.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,5 @@ public class AuthResponseDto {
     private int duration;
     private UUID userId;
     private String username;
+    private Role role;
 }

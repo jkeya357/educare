@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +25,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
+
+    @Override
+    public List<UserResponseDto> findAll() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toDto(users);
+    }
 
     @Override
     public UserResponseDto findUserById(UUID id) {

@@ -10,14 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@RequestMapping("api/v1/enroll")
+@RequestMapping("/api/v1/enrollment")
 @RestController
 @RequiredArgsConstructor
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    @GetMapping
+
+    @GetMapping("/students")
+    public ResponseEntity<List<EnrollmentResponseDto>> getStudentEnrollments(){
+        List<EnrollmentResponseDto> res = enrollmentService.getEnrollments();
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/student")
     public ResponseEntity<List<EnrollmentResponseDto>> getAllEnrollments(
             @RequestParam UUID studentId
             ) {

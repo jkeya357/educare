@@ -23,6 +23,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentMapper enrollmentMapper;
 
     @Override
+    public List<EnrollmentResponseDto> getEnrollments() {
+        List<Enrollment> enrollment = enrollmentRepository.findAll();
+        return enrollmentMapper.toDto(enrollment);
+    }
+
+    @Override
     public List<EnrollmentResponseDto> getEnrollmentsById(UUID studentId) {
         List<Enrollment> enrollmentRes = enrollmentRepository.findByStudentId(studentId);
         return enrollmentMapper.toDto(enrollmentRes);
@@ -40,7 +46,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setStudentId(enrollmentRequestDto.getStudentId());
         enrollment.setCourseId(enrollmentRequestDto.getCourseId());
-        enrollment.setStatus(enrollmentRequestDto.getStatus() ==  null ? Status.PENDING : enrollmentRequestDto.getStatus());
+        enrollment.setStatus(enrollmentRequestDto.getStatus() == null ? Status.ENROLLED : enrollmentRequestDto.getStatus());
         enrollment.setEnrollmentDate(enrollmentRequestDto.getEnrollmentDate() == null ? LocalDateTime.now() : enrollmentRequestDto.getEnrollmentDate());
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);

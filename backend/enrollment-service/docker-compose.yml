@@ -3,7 +3,7 @@ services:
     build:
       dockerfile: Dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://courseDB:5432/${POSTGRES_DB}?sslmode=disable
+      SPRING_DATASOURCE_URL: jdbc:postgresql://enrollmentDB:5432/${POSTGRES_DB}?sslmode=disable
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: true
@@ -12,12 +12,14 @@ services:
       SERVER_PORT: 4003
     ports:
       - "4003:4003"
+    depends_on:
+      - enrollmentDB
     networks:
       - education-service
 
   enrollmentDB:
     image: postgres:latest
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -26,6 +28,8 @@ services:
       - "5434:5432"
     volumes:
       - enrollment-db:/var/lib/postgresql/data
+    networks:
+      - education-service
 
 volumes:
   enrollment-db:

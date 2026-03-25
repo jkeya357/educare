@@ -1,5 +1,6 @@
 package com.pm.courseservice.model.dto;
 
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,6 @@ public class CourseResponseDto {
     private UUID courseOwner;
     private String description;
     private double price;
+    private String imageUrl;
     private LocalDateTime createdAt;
 }

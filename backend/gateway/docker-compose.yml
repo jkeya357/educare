@@ -2,6 +2,8 @@ services:
   gateway-service:
     build:
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
       JWT_SECRET: ${JWT_SECRET}
     ports:
@@ -16,6 +18,8 @@ services:
 
   user-service:
     build: ../user-service
+    env_file:
+      - ../user-service/.env
     ports:
       - "4001:4001"
     networks:
@@ -23,6 +27,8 @@ services:
 
   course-service:
     build: ../course-service
+    env_file:
+      - ../course-service/.env
     ports:
       - "4002:4002"
     networks:
@@ -30,6 +36,8 @@ services:
 
   enrollment-service:
     build: ../enrollment-service
+    env_file:
+      - ../enrollment-service/.env
     ports:
       - "4003:4003"
     networks:
@@ -37,6 +45,8 @@ services:
 
   payment-service:
     build: ../payment-service
+    env_file:
+      - ../payment-service/.env
     ports:
       - "4004:4004"
     networks:

@@ -1,10 +1,7 @@
 package com.pm.courseservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -16,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Course {
 
     @Id
@@ -33,6 +31,8 @@ public class Course {
 
     @Column(name = "price", nullable = false)
     private double price;
+
+    private String imageUrl;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)

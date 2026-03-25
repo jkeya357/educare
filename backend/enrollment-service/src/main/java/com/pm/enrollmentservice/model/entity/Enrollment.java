@@ -23,7 +23,7 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID enrollmentId;
 
-    @Column(name = "student_id", nullable = false, unique = true)
+    @Column(name = "student_id", nullable = false)
     private UUID studentId;
 
     @Column(name = "course_id", nullable = false)
