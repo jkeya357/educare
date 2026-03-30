@@ -9,9 +9,7 @@ services:
       SPRING_JPA_SHOW_SQL: true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SERVER_PORT: 4003
-    ports:
-      - "4003:4003"
+      SERVER_PORT: ${PORT}
     depends_on:
       - enrollmentDB
     networks:
@@ -24,8 +22,6 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5434:5432"
     volumes:
       - enrollment-db:/var/lib/postgresql/data
     networks:

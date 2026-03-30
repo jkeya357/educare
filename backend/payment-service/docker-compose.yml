@@ -9,11 +9,9 @@ services:
       SPRING_JPA_SHOW_SQL: true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SERVER_PORT: 4004
+      SERVER_PORT: ${PORT}
     networks:
       - education-service
-    ports:
-      - "4004:4004"
     depends_on:
       - paymentDB
 
@@ -24,8 +22,6 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5435:5432"
     networks:
       - education-service
     volumes:

@@ -8,14 +8,18 @@ RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
-FROM eclipse-temurin:21-jdk AS runner
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY --from=builder /app/target/user-service-0.0.1-SNAPSHOT.jar app.jar
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
-EXPOSE 4001
+COPY --from=builder /app/target/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

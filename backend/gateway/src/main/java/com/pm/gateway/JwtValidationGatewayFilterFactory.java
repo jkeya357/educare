@@ -10,14 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+
 @Component
 public class JwtValidationGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
 
 
-    private final String secret;
+    private final SecretKey key;
 
     public JwtValidationGatewayFilterFactory(@Value("${jwt.secret}") String secret) {
-        this.secret = secret;
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     @Override
@@ -40,7 +42,7 @@ public class JwtValidationGatewayFilterFactory extends AbstractGatewayFilterFact
             try{
                 String token = authHeader.replace("Bearer ", "");
                 Claims claims = Jwts.parser()
-                        .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                        .verifyWith(key)
                         .build()
                         .parseSignedClaims(token)
                         .getPayload();
