@@ -4,9 +4,14 @@ import com.pm.courseservice.mapper.CourseMapper;
 import com.pm.courseservice.model.Course;
 import com.pm.courseservice.model.dto.CourseResponseDto;
 import com.pm.courseservice.model.dto.CreateCourseRequestDto;
+import com.pm.courseservice.model.dto.UpdateCourseRequestDto;
+import com.pm.courseservice.model.dto.UpdateCourseResponseDto;
 import com.pm.courseservice.repository.CourseRepository;
 import com.pm.courseservice.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +28,15 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     @Override
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    @Cacheable(value = "COURSE_CACHE")
+    public List<CourseResponseDto> getAllCourses() {
+
+            List<Course> course =  courseRepository.findAll();
+            return courseMapper.toDto(course);
     }
 
     @Override
+    @CacheEvict(value = "COURSE_CACHE", allEntries = true)
     public List<CourseResponseDto> createCourseList(List<CreateCourseRequestDto> requestDtoList) {
         List<Course> courses = requestDtoList.stream()
                 .map(req -> Course.builder()
@@ -35,6 +44,7 @@ public class CourseServiceImpl implements CourseService {
                         .courseOwner(req.getCourseOwner())
                         .description(req.getDescription())
                         .price(req.getPrice())
+                        .imageUrl(req.getImageUrl() == null ? "" : req.getImageUrl())
                         .createdAt(req.getCreatedAt() == null ?LocalDateTime.now() : req.getCreatedAt())
                         .build()
                 ).toList();
@@ -44,6 +54,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @CachePut(value = "COURSE_CACHE", key = "#result.courseId()")
+    @CacheEvict(value = "COURSE_CACHE", allEntries = true)
     public CourseResponseDto createCourse(CreateCourseRequestDto requestDto){
 
         Course course = new Course();
@@ -51,11 +63,18 @@ public class CourseServiceImpl implements CourseService {
         course.setCourseOwner(requestDto.getCourseOwner());
         course.setDescription(requestDto.getDescription());
         course.setPrice(requestDto.getPrice());
+        course.setImageUrl(requestDto.getImageUrl() == null ? "" : requestDto.getImageUrl());
         course.setCreatedAt(requestDto.getCreatedAt() == null ? LocalDateTime.now() : requestDto.getCreatedAt());
         courseRepository.save(course);
 
         return courseMapper.toDto(course);
     }
+
+//    @Override
+//    public UpdateCourseResponseDto updateCourse(UpdateCourseRequestDto requestDto) {
+//
+//        Course findCourse = new Course();
+//    }
 
     @Override
     public void updateCourseImage(UUID courseId, String imageUrl) {

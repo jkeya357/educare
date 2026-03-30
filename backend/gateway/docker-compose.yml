@@ -1,4 +1,5 @@
 services:
+
   gateway-service:
     build:
       dockerfile: Dockerfile
@@ -17,34 +18,118 @@ services:
       - payment-service
 
   user-service:
-    build: ../user-service
+    build:
+      context: ../user-service
+      dockerfile: ../user-service/Dockerfile
     env_file:
       - ../user-service/.env
+    environment:
+      DB_URL: jdbc:postgresql://userDB:5432/${POSTGRES_USER_DB}?sslmode=disable
+      DB_USERNAME: ${POSTGRES_USER_USERNAME}
+      DB_PASSWORD: ${POSTGRES_USER_PASSWORD}
     ports:
       - "4001:4001"
     networks:
       - education-service
+    depends_on:
+      - userDB
+
+  userDB:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_USER_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_USER_DB}
+    volumes:
+      - student-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - education-service
 
   course-service:
-    build: ../course-service
+    build:
+      context: ../course-service
+      dockerfile: ../course-service/Dockerfile
     env_file:
       - ../course-service/.env
+    environment:
+      DB_URL: jdbc:postgresql://courseDB:5432/${POSTGRES_COURSE_DB}?sslmode=disable
+      DB_USERNAME: ${POSTGRES_COURSE_USERNAME}
+      DB_PASSWORD: ${POSTGRES_COURSE_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
       - "4002:4002"
     networks:
       - education-service
+    depends_on:
+      - courseDB
+      - redis
+
+  redis:
+    image: redis:7.2
+    container_name: ${REDIS_CONTAINER_NAME}
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: [ "redis-server", "--appendonly", "yes" ]
+    networks:
+      - education-service
+
+  courseDB:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_COURSE_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_COURSE_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_COURSE_DB}
+    volumes:
+      - course-db:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - education-service
 
   enrollment-service:
-    build: ../enrollment-service
+    build:
+      context: ../enrollment-service
+      dockerfile: ../enrollment-service/Dockerfile
     env_file:
       - ../enrollment-service/.env
+    environment:
+      DB_URL: jdbc:postgresql://enrollmentDB:5432/${POSTGRES_ENROLLMENT_DB}?sslmode=disable
+      DB_USERNAME: ${POSTGRES_ENROLLMENT_USERNAME}
+      DB_PASSWORD: ${POSTGRES_ENROLLMENT_PASSWORD}
     ports:
       - "4003:4003"
     networks:
       - education-service
+    depends_on:
+      - enrollmentDB
+
+  enrollmentDB:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_ENROLLMENT_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_ENROLLMENT_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_ENROLLMENT_DB}
+    volumes:
+      - enrollment-db:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - education-service
 
   payment-service:
-    build: ../payment-service
+
+    build:
+      context: ../payment-service
+      dockerfile: ../payment-service/Dockerfile
     env_file:
       - ../payment-service/.env
     ports:
@@ -54,3 +139,9 @@ services:
 
 networks:
   education-service:
+
+volumes:
+  student-data:
+  redis-data:
+  course-db:
+  enrollment-db:

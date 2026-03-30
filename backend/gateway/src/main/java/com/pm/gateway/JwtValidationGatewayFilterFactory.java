@@ -25,7 +25,7 @@ public class JwtValidationGatewayFilterFactory extends AbstractGatewayFilterFact
         return (exchange, chain) -> {
 
             String path = exchange.getRequest().getURI().getPath();
-            if(path.contains("/auth")){
+            if(path.contains("/api/v1/auth")){
                 return chain.filter(exchange);
             }
 

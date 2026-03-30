@@ -6,6 +6,9 @@ import com.pm.courseservice.model.dto.CourseResponseDto;
 import com.pm.courseservice.model.dto.CreateCourseRequestDto;
 import com.pm.courseservice.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +30,8 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<CourseResponseDto>> findAll(){
-        List<Course> res = courseService.getAllCourses();
-        List<CourseResponseDto> dto = courseMapper.toDto(res);
-        return ResponseEntity.ok().body(dto);
+        List<CourseResponseDto> res = courseService.getAllCourses();
+        return ResponseEntity.ok().body(res);
     }
 
     @PostMapping
