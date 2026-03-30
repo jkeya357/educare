@@ -25,8 +25,6 @@ const AdminDashboard = () => {
   useGetAllEnrollmentsQuery();
 
   const foundUsers = useSelector(selectAllUsers);
-  console.log("USERS: ", foundUsers);
-  console.log("USERS COUNT: ", foundUsers.length);
   const users = foundUsers.filter((user) => user.role === "STUDENT");
   const courses = useSelector(selectAllCourses);
   const enrollments = useSelector(selectAllEnrollments);

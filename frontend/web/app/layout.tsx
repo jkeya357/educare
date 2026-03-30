@@ -5,6 +5,7 @@ import ReduxProvider from "@/store/ReduxProvider";
 import NavBarComponent from "@/components/navbar/NavBarComponent";
 import FooterComponent from "@/components/footer/FooterComponent";
 import { ThemeProvider } from "@/components/theme-provider";
+import AuthProvider from "@/store/authSlice/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,16 +33,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NavBarComponent />
-            {children}
-            <FooterComponent />
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NavBarComponent />
+              {children}
+              <FooterComponent />
+            </ThemeProvider>
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

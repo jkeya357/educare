@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUpdateCourseImageMutation } from "@/store/courseSlice/CourseApiSlice";
+import { Noto_Sans_Tamil_Supplement } from "next/font/google";
 
 type Props = {
   courseId: string;
@@ -10,8 +11,6 @@ export default function ImageUpload({ courseId }: Props) {
 
   const [updateImage, { isLoading, isSuccess }] =
     useUpdateCourseImageMutation();
-
-  console.log("courseId: ", courseId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -25,6 +24,9 @@ export default function ImageUpload({ courseId }: Props) {
       courseId,
       file: image,
     });
+    if (isSuccess) {
+      return setImage(null);
+    }
   };
 
   return (

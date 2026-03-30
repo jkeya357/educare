@@ -6,20 +6,26 @@ const authApiSlice = educationApi.injectEndpoints({
     endpoints: (builder) => ({
         signUp: builder.mutation({
             query: (requestsBody: CreateUserRequest) => ({
-                url: "/api/v1/auth/signup",
-                method: "Post",
+                url: `${process.env.NEXT_PUBLIC_AUTH_REQUEST_URL}/signup`,
+                method: "POST",
                 body: {...requestsBody}
             }),
-            invalidatesTags: () => [{type: "User", id: "LIST"}]
+            invalidatesTags: () => [{type: "User", id: "LIST    "}]
         }),
         signIn: builder.mutation({
             query: (requestBody: UserLoginRequest) => ({
-                url: "/api/v1/auth/signin",
+                url: `${process.env.NEXT_PUBLIC_AUTH_REQUEST_URL}/signin`,
                 method: "POST",
                 body: {...requestBody}
+            })
+        }),
+        refresh: builder.mutation<any, void>({
+            query: () => ({
+                url: `${process.env.NEXT_PUBLIC_AUTH_REQUEST_URL}/refresh`,
+                method: "POST"
             })
         })
     })
 })
 
-export const {useSignInMutation, useSignUpMutation} = authApiSlice
+export const {useSignInMutation, useSignUpMutation, useRefreshMutation} = authApiSlice

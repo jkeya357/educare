@@ -12,7 +12,7 @@ const initialState = courseAdapter.getInitialState()
 const CourseApiSlice = educationApi.injectEndpoints({
     endpoints: (builder) => ({
         getCourse: builder.query<EntityState<CourseResponse, string>, void>({
-            query: () => "/api/v1/course",
+            query: () => `${process.env.NEXT_PUBLIC_COURSE_REQUEST_URL}`,
             transformResponse: (responseData: CourseResponse[]) => {
                 return courseAdapter.setAll(initialState, responseData)
             },
@@ -27,7 +27,7 @@ const CourseApiSlice = educationApi.injectEndpoints({
         }),
         createCourse: builder.mutation({
             query: (requestBody) => ({
-                url: "/api/v1/course",
+                url: `${process.env.NEXT_PUBLIC_COURSE_REQUEST_URL}`,
                 method: "POST",
                 body: {...requestBody}
             }),
@@ -40,7 +40,7 @@ const CourseApiSlice = educationApi.injectEndpoints({
 
 
                 return{
-                    url: `/api/v1/course/s3/upload/${courseId}`,
+                    url: `${process.env.NEXT_PUBLIC_COURSE_REQUEST_URL}/s3/upload/${courseId}`,
                     method: "POST",
                     body: formData
                 }

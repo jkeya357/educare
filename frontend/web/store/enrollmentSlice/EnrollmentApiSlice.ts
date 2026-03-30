@@ -13,7 +13,7 @@ const EnrollmentApiSlice = educationApi.injectEndpoints({
     endpoints: (builder) => ({
 
         getAllEnrollments: builder.query<EntityState<EnrollmentResponse, string>, void>({
-            query: () => "/api/v1/enrollment/students",
+            query: () => `${process.env.NEXT_PUBLIC_ENROLLMENT_REQUEST_URL}/students`,
             transformResponse: (response: EnrollmentResponse[]) => {
                 return enrollmentAdapter.setAll(initialState, response)
             },
@@ -27,7 +27,7 @@ const EnrollmentApiSlice = educationApi.injectEndpoints({
             }
         }),
         getEnrollments: builder.query<EntityState<EnrollmentResponse, string>, string>({
-            query: (studentId) => `/api/v1/enrollment/student?studentId=${studentId}`,
+            query: (studentId) => `${process.env.NEXT_PUBLIC_ENROLLMENT_REQUEST_URL}/student?studentId=${studentId}`,
             transformResponse: (response: EnrollmentResponse[]) => {
                 return enrollmentAdapter.setAll(initialState, response)
             },
@@ -42,7 +42,7 @@ const EnrollmentApiSlice = educationApi.injectEndpoints({
         }),
         createEnrollment: builder.mutation({
             query: (requestBody) => ({
-                url: "/api/v1/enrollment",
+                url: `${process.env.NEXT_PUBLIC_ENROLLMENT_REQUEST_URL}`,
                 method: "POST",
                 body: {...requestBody}
             }),

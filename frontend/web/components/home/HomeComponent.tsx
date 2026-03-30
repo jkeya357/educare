@@ -2,19 +2,22 @@ import {
   useGetCourseQuery,
   selectAllCourses,
 } from "@/store/courseSlice/CourseApiSlice";
-import { getUserRole } from "@/store/authSlice/UserSlice";
+import { getUserRole, getAccessToken } from "@/store/authSlice/UserSlice";
 import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageUpload from "@/components/home/UpdateImage";
 import CourseInfo from "../course_card/CourseInfo";
 import CreateCourseModal from "../course_card/CreateCourseModel";
+import { redirect } from "next/navigation";
+import LoadingProvider from "@/store/authSlice/LoadingProvider";
 
 const HomeComponent = () => {
   const { isLoading, isError } = useGetCourseQuery();
+  console.log("COURSE QUERY: ", useGetCourseQuery());
   const courses = useSelector(selectAllCourses);
+  console.log("ALL COURSES FROM BACKEND: ", courses);
 
   const [search, setSearch] = useState("");
 
@@ -23,13 +26,16 @@ const HomeComponent = () => {
   );
 
   const userRole = useSelector(getUserRole);
+  const authorisedToken = useSelector(getAccessToken);
+
+  useEffect(() => {
+    if (!authorisedToken) {
+      redirect("/");
+    }
+  }, [authorisedToken]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <p className="text-muted-foreground">Loading courses...</p>
-      </div>
-    );
+    return <LoadingProvider />;
   }
 
   if (isError) {
